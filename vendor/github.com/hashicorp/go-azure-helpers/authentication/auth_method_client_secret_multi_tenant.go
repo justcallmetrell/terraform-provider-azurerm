@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
@@ -40,13 +41,16 @@ func (a servicePrincipalClientSecretMultiTenantAuth) getAuthorizationToken(sende
 	if err != nil {
 		return nil, err
 	}
-
+	log.Printf("got token: %v", spt)
 	spt.PrimaryToken.SetSender(sender)
 	for _, t := range spt.AuxiliaryTokens {
 		t.SetSender(sender)
 	}
 
+	log.Printf("set sender: %v", spt.AuxiliaryTokens)
 	auth := autorest.NewMultiTenantServicePrincipalTokenAuthorizer(spt)
+
+	log.Printf("got auth %v", auth)
 	return auth, nil
 }
 
